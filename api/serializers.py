@@ -4,27 +4,24 @@ from datetime import datetime
 
 class AppointmentSerializer(serializers.ModelSerializer):
     checklist = serializers.JSONField(required=False)
-    appointment_time = serializers.CharField() 
+    appointment_time = serializers.TimeField(
+        input_formats=['%I:%M %p'], required=False
+    )
 
     class Meta:
         model = Appointment
         fields = [
-            'id', 'customer_name','phone', 'appointment_date',
-            'appointment_time', 'checklist', 'status', 'booking_time'
+            'id', 'user', 'customer_name', 'phone',
+            'appointment_date', 'appointment_time',
+            'checklist', 'status', 'booking_time'
         ]
-        read_only_fields = ['customer_name']
-
-
-    def validate_appointment_time(self, value):
-        try:
-            return datetime.strptime(value, '%I:%M %p').time()
-        except ValueError:
-            raise serializers.ValidationError("Time has wrong format. Use 'HH:MM AM/PM'.")
+        read_only_fields = ['customer_name', 'user']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data['appointment_time'] = instance.appointment_time.strftime("%I:%M %p")
         return data
+
 
 
 class ServiceSerializer(serializers.ModelSerializer):
