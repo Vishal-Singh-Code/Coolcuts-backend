@@ -1,33 +1,45 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 
 
-# REGISTER SERIALIZER
-class RegisterSerializer(serializers.ModelSerializer):
+class EmailNormalizeMixin:
+    def validate_email(self, value):
+        return value.strip().lower()
+
+
+class SendOTPSerializer(EmailNormalizeMixin, serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class VerifyOTPRegisterSerializer(EmailNormalizeMixin, serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.RegexField(r"^\d{6}$")
     password = serializers.CharField(write_only=True)
 
-    class Meta:
-        model = User
-        fields = ["id", "username", "email", "password", "first_name", "last_name"]
-
-    def create(self, validated_data):
-        return User.objects.create_user(
-            username=validated_data["username"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            first_name=validated_data.get("first_name", ""),
-            last_name=validated_data.get("last_name", "")
-        )
+    def validate_password(self, value):
+        validate_password(value)
+        return value
 
 
-# LOGIN SERIALIZER
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
+class LoginSerializer(EmailNormalizeMixin, serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
 
 
-# USER SERIALIZER
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "email", "first_name", "last_name"]
+class ForgotPasswordRequestSerializer(EmailNormalizeMixin, serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class ForgotPasswordConfirmSerializer(EmailNormalizeMixin, serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.RegexField(r"^\d{6}$")
+    password = serializers.CharField(write_only=True)
+
+    def validate_password(self, value):
+        validate_password(value)
+        return value
+
+
+class GoogleAuthSerializer(serializers.Serializer):
+    id_token = serializers.CharField()
+

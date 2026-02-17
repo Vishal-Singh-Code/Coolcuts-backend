@@ -9,6 +9,8 @@ __pycache__/
 
 # Virtual environments
 myenv/
+venv/
+.venv/
 
 # VSCode and OS junk
 .vscode/
@@ -34,3 +36,6 @@ htmlcov/
 # Django migrations cache (not the actual migration files)
 **/migrations/__pycache__/
 **/migrations/*.pyc
+
+# Local database
+db.sqlite3

@@ -2,29 +2,49 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+class Service(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.PositiveIntegerField()
+    
+    def __str__(self):
+        return self.name
+
+
 class Appointment(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('done', 'Done'),
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    customer_name = models.CharField(max_length=100, null=True, blank=True)
-    phone = models.CharField(max_length=10, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="appointments")
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="appointments")
+
     appointment_date = models.DateField()
     appointment_time = models.TimeField()
+
     booking_time = models.DateTimeField(default=timezone.now) 
-    checklist = models.JSONField(default=list, blank=True) 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["appointment_date", "appointment_time"],
+                name="unique_appointment_slot",
+            ),
+        ]
+
     def __str__(self):
-        return f"{self.customer_name} - {self.appointment_date} at {self.appointment_time}"
+        return f"{self.user.email} - {self.service.name} ({self.appointment_date} {self.appointment_time})"
     
-class Service(models.Model):
+    
+class ChecklistItem(models.Model):
+    appointment = models.ForeignKey(
+        Appointment,
+        related_name="checklist",
+        on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=100)
-    price = models.IntegerField()
-    
-    def __str__(self):
-        return self.name
+    done = models.BooleanField(default=False)
+
     
 class ContactForm(models.Model):
     name = models.CharField(max_length=100)
