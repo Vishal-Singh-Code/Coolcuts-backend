@@ -1,55 +1,76 @@
-# **CoolCuts**  
+# CoolCuts
 
-A full-stack web application built using **Django** for the backend and **React** for the frontend. CoolCuts offers a seamless and user-friendly experience, showcasing beautiful UI elements with responsive design.  
+CoolCuts is a full-stack barber appointment booking platform built with Django REST Framework and React. It includes user authentication, OTP-based registration, Google sign-in, appointment booking, appointment history, profile management, and an admin panel for managing services and appointments.
 
-## **Features**  
-- **Dynamic Home Page** with background images and responsive layout.  
-- **Backend**: Django manages user data, authentication, and APIs.  
-- **Frontend**: React handles the UI with state management.  
-- **Deployment**: Successfully deployed using Django static file integration.  
+## Tech Stack
 
----
+- Backend: Django, Django REST Framework, Simple JWT
+- Frontend: React, Vite, Tailwind CSS, Axios
+- Database: SQLite for local development when `DEBUG=True`, PostgreSQL for production
+- Deployment: Render
 
-## **Tech Stack**  
-- **Frontend**: React, HTML, CSS  
-- **Backend**: Django, Python  
-- **Database**: PostgreSQL  
-- **Deployment Platform**: Render  
+## Project Structure
 
----
+- `Coolcuts-backend/` - Django backend
+- `Coolcuts-frontend/` - React frontend
 
-## **Setup Instructions**  
+## Local Setup
 
-### **1. Clone the Repository**  
+### 1. Clone the repository
+
 ```bash
 git clone https://github.com/Vishal18cse/CoolCuts
+cd CoolCuts
 ```
-### **2. Install Backend Dependencies**
-Ensure Python and pip are installed.
-```
+
+### 2. Backend setup
+
+```bash
+cd Coolcuts-backend
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
-### **3. Install Frontend Dependencies**
-Go to the frontend directory and install dependencies:
-```
-cd frontend
-npm install
-```
-### **4. Build the React Frontend**
-Generate static files to integrate into the Django backend:
-```
-npm run build
-```
-### **5. Setup Database**
-Ensure PostgreSQL is installed and create a new database. Update your settings.py with the database credentials
-```
+
+Create a `.env` file using `.env.example`.
+
+Run migrations:
+
+```bash
 python manage.py migrate
 ```
-### **6. Serve Static Files and Run Server**
-Collect static files and start the Django server:
-```
-python manage.py collectstatic --no-input'
+
+Start the backend server:
+
+```bash
 python manage.py runserver
 ```
 
+### 3. Frontend setup
 
+Open a new terminal:
+
+```bash
+cd Coolcuts-frontend
+npm install
+```
+
+Create a `.env` file using `.env.example`.
+
+Start the frontend:
+
+```bash
+npm run dev
+```
+
+To create a production build:
+
+```bash
+npm run build
+```
+
+## Environment Variables
+
+Backend variables are documented in `Coolcuts-backend/.env.example`.
+
+Frontend variables are documented in `Coolcuts-frontend/.env.example`.

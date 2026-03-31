@@ -7,9 +7,18 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+def parse_debug_flag(value):
+    normalized = str(value).strip().lower()
+    if normalized in {"1", "true", "t", "yes", "y", "on"}:
+        return True
+    if normalized in {"0", "false", "f", "no", "n", "off", "release", "prod", "production"}:
+        return False
+    return True
+
 SECRET_KEY = config("SECRET_KEY") 
 
-DEBUG = config("DEBUG", cast=bool, default=True) 
+DEBUG = parse_debug_flag(config("DEBUG", default="True"))
 
 ALLOWED_HOSTS = [host.strip() for host in config("ALLOWED_HOSTS").split(",")]
 
